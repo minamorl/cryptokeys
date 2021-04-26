@@ -1,0 +1,24 @@
+{
+  "name": "cryptokeys",
+  "version": "0.0.1",
+  "description": "Provide a client for crypted key-value store",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/minamorl/cryptokeys.git"
+  },
+  "author": "minamorl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/minamorl/cryptokeys/issues"
+  },
+  "homepage": "https://github.com/minamorl/cryptokeys#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.41",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
