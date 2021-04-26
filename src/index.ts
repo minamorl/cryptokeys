@@ -1,16 +1,16 @@
 import fs from "fs"
 import crypto from "crypto"
 
-interface EncryptedFileConfig {
+export interface EncryptedFileConfig {
     algorithm: string
 }
 
-interface IEncryptionHandler {
+export interface IEncryptionHandler {
     decrypt(source: string, key: string): string
     encrypt(source: string, key: string): string
 }
 
-class EncryptionHandler implements IEncryptionHandler {
+export class EncryptionHandler implements IEncryptionHandler {
     config: EncryptedFileConfig
     constructor(config?: EncryptedFileConfig) {
         const defaultConfig = {
@@ -32,7 +32,7 @@ class EncryptionHandler implements IEncryptionHandler {
     }
 }
 
-class EncryptedFile {
+export class EncryptedFile {
     handler: IEncryptionHandler
     path: string
     key: string
@@ -43,44 +43,18 @@ class EncryptedFile {
     }
     saveEnvValues(env: string, updateValues: Record<string, string>) {
         const parsed = JSON.parse(fs.readFileSync(this.path, "utf-8"))
-        if (parsed[env]) {
-            parsed[env] = this.handler.encrypt(
-                JSON.stringify(Object.assign({}, JSON.parse(this.handler.decrypt(parsed[env], this.key)), updateValues)),
-                this.key
-            )
-        } else {
-            parsed[env] = this.handler.encrypt(
-                JSON.stringify(updateValues),
-                this.key
-            )
-        }
+        parsed[env] = this.handler.encrypt(
+            JSON.stringify(updateValues),
+            this.key
+        )
         fs.writeFileSync(this.path, JSON.stringify(parsed))
     }
     getEnvValues(env: string) {
         const parsed = JSON.parse(fs.readFileSync(this.path, "utf-8"))
-        return JSON.parse(this.handler.decrypt(parsed[env], this.key))
+        return this.handler.decrypt(parsed[env], this.key)
     }
     getEnvNames(key: string): string[] {
         const parsed = JSON.parse(fs.readFileSync(this.path, "utf-8"))
         return Object.keys(parsed)
     }
 }
-
-
-function main(): void {
-    const key = crypto.randomBytes(32).toString("hex");
-    console.log(key)
-    const file = new EncryptedFile("./test.enc", key)
-    file.saveEnvValues("dev", {
-        "test1": "test"
-    })
-    file.saveEnvValues("dev", {
-        "test2": "test"
-    })
-    file.saveEnvValues("dev", {
-        "test3": "test"
-    })
-    console.log(file.getEnvValues("dev"))
-}
-
-main()
