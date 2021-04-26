@@ -2,7 +2,7 @@ import fs from "fs"
 import crypto from "crypto"
 
 interface EncryptedFileConfig {
-    algorithmn: string
+    algorithm: string
 }
 
 interface IEncryptionHandler {
@@ -14,19 +14,19 @@ class EncryptionHandler implements IEncryptionHandler {
     config: EncryptedFileConfig
     constructor(config?: EncryptedFileConfig) {
         const defaultConfig = {
-            algorithmn: 'aes-256-cbc',
+            algorithm: 'aes-256-cbc',
         }
         this.config = Object.assign({}, defaultConfig, config)
     }
     decrypt(source: string, key: string): string {
         const [iv, encrypted] = source.split(":").map(v => Buffer.from(v, "hex"))
-        const decipher = crypto.createDecipheriv(this.config.algorithmn, Buffer.from(key, "hex"), iv)
+        const decipher = crypto.createDecipheriv(this.config.algorithm, Buffer.from(key, "hex"), iv)
         const decrypted = decipher.update(encrypted)
         return Buffer.concat([decrypted, decipher.final()]).toString()        
     }
     encrypt(source: string, key: string): string {
         const iv = crypto.randomBytes(16)
-        const cipher = crypto.createCipheriv(this.config.algorithmn, Buffer.from(key, 'hex'), iv)
+        const cipher = crypto.createCipheriv(this.config.algorithm, Buffer.from(key, 'hex'), iv)
         const encrypted = cipher.update(source)
         return iv.toString("hex") + ":" + Buffer.concat([encrypted, cipher.final()]).toString("hex")
     }
