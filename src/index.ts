@@ -51,6 +51,8 @@ export class EncryptedFile {
     }
     getEnvValues(env: string) {
         const parsed = JSON.parse(fs.readFileSync(this.path, "utf-8"))
+        console.log(parsed)
+        console.log(parsed[env])
         return this.handler.decrypt(parsed[env], this.key)
     }
     getEnvNames(key: string): string[] {
