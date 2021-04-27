@@ -6,7 +6,7 @@ import minimist from "minimist"
 import { EncryptedFile, EncryptionHandler } from "./index"
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 
-const defaultPath = "./.cryptokeys/secure.enc"
+const defaultPath = "./.cryptokeys/secrets.enc"
 
 function openEncryptedFile(path: string, envName: string, key: string): void {
     const file = new EncryptedFile(path, key)
