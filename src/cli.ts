@@ -10,7 +10,8 @@ const defaultPath = "./.cryptokeys/secrets.enc"
 
 function openEncryptedFile(path: string, envName: string, key: string): void {
     const file = new EncryptedFile(path, key)
-    writeFileSync("./.cryptokeys/.view.json", file.getEnvValues(envName))
+    // Re-format JSON object with 4 spaces
+    writeFileSync("./.cryptokeys/.view.json", JSON.stringify(JSON.parse(file.getEnvValues(envName)), null, 4))
 
     let proc = "vim"
     if (process.env.EDITOR) {
@@ -53,7 +54,6 @@ function createEnv(envName: string, path: string): void {
         throw Error(`Env name \`${envName}\` is already existing. Abort.`)
     }
     const key = crypto.randomBytes(32).toString("hex");
-    console.log(key)
     parsed[envName] = new EncryptionHandler().encrypt("{}", key)
     writeFileSync(path ?? defaultPath, JSON.stringify(parsed), "utf-8")
 }
@@ -72,7 +72,6 @@ function main(): void {
         return
     }
     if (args._.find(v => v ==="open")) {
-        console.log(args)
         if (args.name === undefined || args.key === undefined) {
             throw Error()
         }
